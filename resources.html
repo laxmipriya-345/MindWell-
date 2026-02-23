@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Mental Health Resources</h2>
+    
+    <div class="row mt-4">
+        {% for resource in resources %}
+        <div class="col-md-4 mb-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <span class="badge bg-primary mb-2">{{ resource.category }}</span>
+                    <h5 class="card-title">{{ resource.title }}</h5>
+                    <p class="card-text">{{ resource.description }}</p>
+                    <a href="{{ resource.url }}" class="btn btn-outline-primary" target="_blank">Learn More</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

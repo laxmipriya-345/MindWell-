@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('journal') }}">Journal</a></li>
+            <li class="breadcrumb-item active">{{ entry.title }}</li>
+        </ol>
+    </nav>
+    
+    <div class="card">
+        <div class="card-header">
+            <h3>{{ entry.title }}</h3>
+            <p class="text-muted">
+                Created: {{ entry.created_at.strftime('%B %d, %Y at %I:%M %p') }}
+                {% if entry.updated_at != entry.created_at %}
+                    <br>Updated: {{ entry.updated_at.strftime('%B %d, %Y at %I:%M %p') }}
+                {% endif %}
+            </p>
+        </div>
+        <div class="card-body">
+            <p class="card-text" style="white-space: pre-wrap;">{{ entry.content }}</p>
+        </div>
+        <div class="card-footer">
+            <a href="{{ url_for('journal') }}" class="btn btn-secondary">Back to Journal</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}Assessment Results - MindWell{% endblock %}
+
+{% block extra_css %}
+<style>
+    .result-container {
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 20px;
+    }
+    
+    .result-card {
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+    
+    .score-circle {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 20px auto;
+        font-size: 3em;
+        font-weight: bold;
+        color: white;
+    }
+    
+    .score-low { background: linear-gradient(135deg, #00b09b, #96c93d); }
+    .score-mild { background: linear-gradient(135deg, #fdc830, #f37335); }
+    .score-moderate { background: linear-gradient(135deg, #f093fb, #f5576c); }
+    .score-high { background: linear-gradient(135deg, #ff6b6b, #c44569); }
+    
+    .level-badge {
+        display: inline-block;
+        padding: 8px 30px;
+        border-radius: 25px;
+        font-size: 1.2em;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+    
+    .resource-card {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 15px;
+        margin: 10px 0;
+        text-align: left;
+    }
+    
+    .action-buttons {
+        margin-top: 30px;
+    }
+    
+    .action-buttons .btn {
+        margin: 5px;
+        padding: 12px 30px;
+        border-radius: 25px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="result-container">
+    <div class="result-card">
+        <h1 class="mb-4">Assessment Results</h1>
+        
+        <!-- Score Circle -->
+        <div class="score-circle 
+            {% if level == 'Low' %}score-low
+            {% elif level == 'Mild' %}score-mild
+            {% elif level == 'Moderate' %}score-moderate
+            {% else %}score-high{% endif %}">
+            {{ score }}
+        </div>
+        
+        <!-- Risk Level -->
+        <span class="level-badge 
+            {% if level == 'Low' %}bg-success
+            {% elif level == 'Mild' %}bg-info
+            {% elif level == 'Moderate' %}bg-warning
+            {% else %}bg-danger{% endif %} text-white">
+            {{ level }} Risk Level
+        </span>
+        
+        <!-- Message -->
+        <div class="alert alert-info mt-3">
+            <i class="fas fa-info-circle me-2"></i>
+            {{ message }}
+        </div>
+        
+        <!-- Important Note -->
+        <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>Important:</strong> This is not a diagnostic tool. If you're concerned about your mental health, please consult with a mental health professional.
+        </div>
+        
+        <!-- Resources -->
+        {% if resources %}
+            <h5 class="mt-4">Recommended Resources</h5>
+            {% for resource in resources %}
+                <div class="resource-card">
+                    <h6><i class="fas fa-book-open me-2 text-primary"></i>{{ resource.title }}</h6>
+                    <p class="text-muted small">{{ resource.description }}</p>
+                    <a href="{{ resource.url }}" class="btn btn-sm btn-outline-primary">View Resource</a>
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <a href="{{ url_for('self_assessment') }}" class="btn btn-primary">
+                <i class="fas fa-redo me-2"></i>Take Again
+            </a>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+            </a>
+            {% if level in ['Moderate', 'High'] %}
+                <a href="{{ url_for('resources') }}" class="btn btn-info">
+                    <i class="fas fa-hand-holding-heart me-2"></i>Get Help
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

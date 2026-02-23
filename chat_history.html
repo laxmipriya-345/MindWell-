@@ -1,0 +1,20 @@
+<!-- Templates/chat_history.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Chat History</h2>
+    <div class="chat-history-container">
+        <!-- Chat history will be loaded here via JavaScript -->
+        <div id="chatHistory"></div>
+    </div>
+</div>
+
+<script>
+// Load chat history from localStorage or backend
+function loadChatHistory() {
+    // Implementation depends on how you want to store history
+    // You can store in database or localStorage
+}
+</script>
+{% endblock %}

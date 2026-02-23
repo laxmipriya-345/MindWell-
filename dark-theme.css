@@ -1,0 +1,24 @@
+:root {
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --card-bg: #111827;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --accent: #6366f1;
+}
+
+body.dark-mode {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+.dark-mode .feature-card,
+.dark-mode .preview-card,
+.dark-mode .stat-card {
+    background: var(--card-bg);
+    color: var(--text-primary);
+}
+
+.dark-mode .dashboard-header {
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+}

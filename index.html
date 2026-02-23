@@ -1,0 +1,267 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section d-flex align-items-center">
+    <div class="floating-shape shape1"></div>
+    <div class="floating-shape shape2"></div>
+    <div class="floating-shape shape3"></div>
+    
+    <div class="container hero-content">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-3 fw-bold hero-title">MindWell</h1>
+                <p class="lead mb-4">Your Personal Mental Health Wellness Platform</p>
+                <p class="mb-4">Track your moods, journal your thoughts, and access resources for better mental well-being. Join thousands of users who have transformed their mental health journey.</p>
+                
+                {% if not current_user.is_authenticated %}
+                <div class="d-flex gap-3">
+                    <a href="{{ url_for('register') }}" class="cta-button">
+                        <i class="fas fa-rocket me-2"></i>Get Started
+                    </a>
+                    <a href="#features" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-chevron-down me-2"></i>Learn More
+                    </a>
+                </div>
+                {% else %}
+                <a href="{{ url_for('dashboard') }}" class="cta-button">
+                    <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+                </a>
+                {% endif %}
+            </div>
+            <div class="col-lg-6 text-center">
+                <img src="https://img.freepik.com/free-vector/mental-health-concept-illustration_114360-4304.jpg" alt="Mental Health Illustration" class="img-fluid floating" style="max-width: 80%;">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section id="features" class="features-section">
+    <div class="container">
+        <h2 class="section-title display-5 fw-bold reveal reveal-up">Why Choose MindWell?</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-smile"></i>
+                    </div>
+                    <h3>Mood Tracking</h3>
+                    <p>Track your daily moods and identify patterns in your emotional well-being with our intuitive mood tracker.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <h3>Journaling</h3>
+                    <p>Write your thoughts and feelings in a private, secure journal. Express yourself freely and reflect on your journey.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Mood Analysis</h3>
+                    <p>Get detailed insights into your mood patterns, detect swings, and receive personalized recommendations.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h3>Mental Health Check</h3>
+                    <p>Take our self-assessment to understand your mental wellbeing and get personalized resources.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <h3>Resources</h3>
+                    <p>Access a curated collection of mental health resources, articles, and coping strategies.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Private & Secure</h3>
+                    <p>Your data is encrypted and private. We take your privacy and security seriously.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Technologies Section -->
+<section class="tech-section">
+    <div class="container">
+        <h2 class="section-title display-5 fw-bold reveal reveal-up">Built With Modern Technologies</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="tech-item reveal reveal-left">
+                    <div class="tech-icon">
+                        <i class="fab fa-python"></i>
+                    </div>
+                    <h4>Flask (Python)</h4>
+                    <p>Lightweight and flexible web framework for building robust backend applications</p>
+                    <div class="progress mt-3" style="height: 5px;">
+                        <div class="progress-bar bg-primary" style="width: 95%"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="tech-item reveal reveal-up">
+                    <div class="tech-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h4>SQLite</h4>
+                    <p>Efficient and reliable database for storing user data and journal entries</p>
+                    <div class="progress mt-3" style="height: 5px;">
+                        <div class="progress-bar bg-success" style="width: 90%"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="tech-item reveal reveal-right">
+                    <div class="tech-icon">
+                        <i class="fab fa-js"></i>
+                    </div>
+                    <h4>HTML/CSS/JavaScript</h4>
+                    <p>Modern frontend with responsive design and smooth animations</p>
+                    <div class="progress mt-3" style="height: 5px;">
+                        <div class="progress-bar bg-warning" style="width: 95%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Stats Counter -->
+        <div class="row mt-5 text-center">
+            <div class="col-md-4">
+                <h2 class="counter" data-target="5000">0</h2>
+                <p>Active Users</p>
+            </div>
+            <div class="col-md-4">
+                <h2 class="counter" data-target="10000">0</h2>
+                <p>Moods Tracked</p>
+            </div>
+            <div class="col-md-4">
+                <h2 class="counter" data-target="5000">0</h2>
+                <p>Journal Entries</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action Section -->
+<section class="cta-section">
+    <div class="container cta-content">
+        <h2 class="display-5 fw-bold mb-4">Start Your Mental Health Journey Today</h2>
+        <p class="lead mb-4">Join thousands of users who are already benefiting from MindWell</p>
+        {% if not current_user.is_authenticated %}
+        <a href="{{ url_for('register') }}" class="cta-button">
+            <i class="fas fa-user-plus me-2"></i>Get Started Now
+        </a>
+        {% else %}
+        <a href="{{ url_for('dashboard') }}" class="cta-button">
+            <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+        </a>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="features-section">
+    <div class="container">
+        <h2 class="section-title display-5 fw-bold reveal reveal-up">What Our Users Say</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <i class="fas fa-quote-left fa-2x text-primary mb-3"></i>
+                    <p>"MindWell has helped me understand my mood patterns better. The analysis feature is incredibly insightful!"</p>
+                    <h5 class="mt-3">- Sarah J.</h5>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <i class="fas fa-quote-left fa-2x text-primary mb-3"></i>
+                    <p>"The journaling feature is my favorite. It's private, secure, and helps me process my thoughts daily."</p>
+                    <h5 class="mt-3">- Michael R.</h5>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <i class="fas fa-quote-left fa-2x text-primary mb-3"></i>
+                    <p>"The mental health check and resources have been invaluable. Highly recommended for anyone on their wellness journey."</p>
+                    <h5 class="mt-3">- Emily W.</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Floating CTA Button -->
+<div class="position-fixed bottom-0 end-0 m-4" style="z-index: 1000;">
+    <a href="#top" class="btn btn-primary rounded-circle shadow-lg" style="width: 50px; height: 50px; line-height: 50px; padding: 0;">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+<style>
+.floating {
+    animation: floating 3s ease-in-out infinite;
+}
+
+@keyframes floating {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+    100% { transform: translateY(0px); }
+}
+
+.counter {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #667eea;
+    animation: countUp 2s ease;
+}
+</style>
+
+<script>
+// Initialize counters when in view
+document.addEventListener('DOMContentLoaded', function() {
+    const counters = document.querySelectorAll('.counter');
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const counter = entry.target;
+                const target = parseInt(counter.getAttribute('data-target'));
+                let count = 0;
+                const updateCounter = setInterval(() => {
+                    if (count < target) {
+                        count += Math.ceil(target / 100);
+                        if (count > target) count = target;
+                        counter.textContent = count;
+                    } else {
+                        clearInterval(updateCounter);
+                    }
+                }, 20);
+                observer.unobserve(counter);
+            }
+        });
+    });
+    
+    counters.forEach(counter => observer.observe(counter));
+});
+</script>
+{% endblock %}
