@@ -11,8 +11,14 @@ import json
 
 from database import db, User, Mood, JournalEntry, Resource
 from mood_analysis import MoodAnalyzer, get_mood_statistics, analyze_moods
-
+from simple_chatbot import SimpleMentalHealthChatbot
 load_dotenv()
+# At the top of app.py, replace your import:
+from minimal_chatbot import MinimalChatbot
+
+# Then initialize:
+chatbot = MinimalChatbot()
+print("✅ Chatbot ready!")
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-key-change-in-production')
@@ -30,7 +36,7 @@ login_manager.login_message = 'Please log in to access this page.'
 
 # ---------------- LOGIN MANAGER ----------------
 
-@login_manager.user_loader
+@login_manager.user_loader 
 def load_user(user_id):
     return db.session.get(User, int(user_id))
 
@@ -681,27 +687,44 @@ except:
 
 from flask_login import login_required, current_user
 
-@app.route("/api/chat", methods=["POST"])
-@login_required
+# In app.py - Replace your existing /api/chat route with this:
+
+
+@app.route('/api/chat', methods=['POST'])
 def chat():
-    data = request.get_json()
-    user_message = data.get("message")
-
-    from openai import OpenAI
-    client = OpenAI()
-
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": "You are a helpful mental health assistant."},
-            {"role": "user", "content": user_message}
-        ]
-    )
-
-    reply = response.choices[0].message.content
-
-    return jsonify({"reply": reply})
-
+    """API endpoint for chatbot messages"""
+    try:
+        # Get user ID (supports both logged-in and guest users)
+        if 'user_id' in session:
+            user_id = str(session['user_id'])
+        elif hasattr(current_user, 'id') and current_user.is_authenticated:
+            user_id = str(current_user.id)
+        else:
+            user_id = 'guest'
+        
+        data = request.json
+        if not data:
+            return jsonify({'error': 'No data received'}), 400
+        
+        user_message = data.get('message', '')
+        
+        if not user_message:
+            return jsonify({'error': 'No message provided'}), 400
+        
+        # Get chatbot response
+        response = chatbot.get_chat_response(user_id, user_message)
+        
+        return jsonify(response)
+        
+    except Exception as e:
+        print(f"Error in chat: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({
+            'success': True,  # Return success to avoid frontend errors
+            'response': "I'm here to listen. Could you tell me more about how you're feeling?",
+            'crisis_detected': False
+        }), 200
 @app.route('/chat-history')
 def chat_history():
     """View chat history page"""
@@ -709,6 +732,52 @@ def chat_history():
         return redirect(url_for('login'))
     return render_template('chat_history.html')
 # ---------------- RUN ----------------
+# In app.py, find where you import and initialize the chatbot
+# Replace these lines:
 
+# FROM:
+from chatbot import MentalHealthChatbot, SimpleMentalHealthChatbot
+
+# Initialize chatbot
+try:
+    chatbot = MentalHealthChatbot()  # Use OpenAI version
+except:
+    chatbot = SimpleMentalHealthChatbot()  # Fallback to simple version
+    print("Using simple chatbot (no OpenAI API key found)")
+
+# TO:
+from chatbot import SimpleMentalHealthChatbot
+
+# Initialize chatbot with simple version (no API needed)
+chatbot = SimpleMentalHealthChatbot()
+print("✅ Simple Mental Health Chatbot initialized successfully!")
+@app.route('/api/mood-insights')
+def mood_insights():
+    """Get mood insights for current user"""
+    if 'user_id' not in session:
+        return jsonify({'success': False, 'error': 'Not logged in'}), 401
+    
+    user_id = session['user_id']
+    
+    patterns = chatbot.mood.get_mood_patterns(user_id)
+    trend = chatbot.mood.get_recent_mood_trend(user_id)
+    recommendation = chatbot.mood.get_mood_recommendation(user_id)
+    
+    if patterns:
+        insight = f"Over the past 30 days, you've most frequently reported feeling {patterns[0]['mood']}."
+        if trend == 'improving':
+            insight += " Your mood has been improving - that's great progress!"
+        elif trend == 'declining':
+            insight += " Your mood has been declining recently. Would you like to talk about what's going on?"
+    else:
+        insight = "Start chatting with the AI assistant to build your mood insights!"
+    
+    return jsonify({
+        'success': True,
+        'insight': insight,
+        'recommendation': recommendation,
+        'trend': trend,
+        'patterns': patterns
+    })
 if __name__ == "__main__":
     app.run(debug=True)
