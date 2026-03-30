@@ -361,7 +361,43 @@
         </div>
     </div>
 </div>
+<!-- Add this after your existing cards -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-chart-line"></i> Your Mood Insights</h5>
+            </div>
+            <div class="card-body">
+                <div id="moodInsights">
+                    <p class="text-muted">Based on your conversations, I can help you understand your emotional patterns.</p>
+                    <button onclick="getMoodInsights()" class="btn btn-outline-primary">
+                        <i class="fas fa-chart-bar"></i> View Your Insights
+                    </button>
+                </div>
+                <div id="moodChart" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+</div>
 
+<script>
+function getMoodInsights() {
+    fetch('/api/mood-insights')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Display insights
+                document.getElementById('moodInsights').innerHTML = `
+                    <div class="alert alert-info">
+                        <strong>${data.insight}</strong>
+                    </div>
+                    ${data.recommendation ? `<div class="alert alert-success">${data.recommendation}</div>` : ''}
+                `;
+            }
+        });
+}
+</script>
 <!-- Add this line to include the chatbot component -->
 {% include 'chatbot_component.html' %}
 

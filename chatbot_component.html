@@ -1,6 +1,7 @@
+<!-- chatbot_component.html - Complete working version -->
 <div class="chatbot-container" id="chatbotContainer">
     <div class="chatbot-header" onclick="toggleChatbot()">
-        <h3>🤖 AI Mental Health Assistant</h3>
+        <h3><i class="fas fa-robot"></i> AI Mental Health Assistant</h3>
         <span class="toggle-icon">▼</span>
     </div>
     
@@ -17,14 +18,14 @@
             <input type="text" 
                    id="chatInput" 
                    placeholder="Type your message here..." 
-                   onkeypress="handleKeyPress(event)">
+                   onkeypress="if(event.key === 'Enter') sendMessage()">
             <button onclick="sendMessage()" class="send-btn">
-                ➤
+                <i class="fas fa-paper-plane"></i> Send
             </button>
         </div>
         
         <div class="crisis-warning" id="crisisWarning" style="display: none;">
-            <p><strong>If you're in crisis:</strong> Please contact local emergency support immediately.</p>
+            <p><strong>If you're in crisis:</strong> Please call 988 or text HOME to 741741 for immediate support.</p>
         </div>
     </div>
 </div>
@@ -37,25 +38,32 @@
     width: 350px;
     background: white;
     border-radius: 10px;
-    box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+    box-shadow: 0 5px 25px rgba(0,0,0,0.2);
     z-index: 1000;
 }
 
 .chatbot-header {
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    background: #4a5568;
     color: white;
-    padding: 15px;
+    padding: 12px 15px;
     border-radius: 10px 10px 0 0;
     cursor: pointer;
     display: flex;
     justify-content: space-between;
+    align-items: center;
+}
+
+.chatbot-header h3 {
+    margin: 0;
+    font-size: 16px;
 }
 
 .chatbot-body {
-    height: 400px;
+    height: 450px;
     display: flex;
     flex-direction: column;
-    background: #f8f9fa;
+    background: #f7fafc;
+    border-radius: 0 0 10px 10px;
 }
 
 .chat-messages {
@@ -65,56 +73,86 @@
 }
 
 .message {
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     display: flex;
 }
 
-.user-message { justify-content: flex-end; }
+.message.user-message {
+    justify-content: flex-end;
+}
 
 .message-content {
-    padding: 10px 15px;
-    border-radius: 15px;
     max-width: 80%;
+    padding: 10px 15px;
+    border-radius: 18px;
+    font-size: 14px;
+    line-height: 1.4;
+    word-wrap: break-word;
 }
 
 .bot-message .message-content {
-    background: white;
+    background: #e2e8f0;
+    color: #2d3748;
+    border-bottom-left-radius: 4px;
 }
 
 .user-message .message-content {
-    background: #667eea;
+    background: #4a5568;
     color: white;
+    border-bottom-right-radius: 4px;
 }
 
 .chat-input-area {
-    padding: 10px;
+    padding: 15px;
+    background: white;
+    border-top: 1px solid #e2e8f0;
     display: flex;
     gap: 10px;
-    background: white;
 }
 
 .chat-input-area input {
     flex: 1;
     padding: 10px;
+    border: 1px solid #cbd5e0;
     border-radius: 20px;
-    border: 1px solid #ddd;
+    outline: none;
+    font-size: 14px;
+}
+
+.chat-input-area input:focus {
+    border-color: #4a5568;
 }
 
 .send-btn {
-    background: #667eea;
-    color: white;
+    padding: 8px 16px;
     border: none;
-    width: 40px;
-    border-radius: 50%;
+    background: #4a5568;
+    color: white;
+    border-radius: 20px;
     cursor: pointer;
+    font-size: 14px;
+}
+
+.send-btn:hover {
+    background: #2d3748;
 }
 
 .crisis-warning {
-    background: #fee;
+    background: #fed7d7;
     padding: 10px;
     text-align: center;
     font-size: 12px;
-    border-top: 1px solid #fcc;
+    border-top: 1px solid #feb2b2;
+}
+
+.crisis-warning p {
+    margin: 0;
+    color: #c53030;
+}
+
+.typing-indicator .message-content {
+    padding: 10px 15px;
+    min-width: 50px;
 }
 </style>
 
@@ -124,19 +162,15 @@ let isChatbotOpen = true;
 function toggleChatbot() {
     const body = document.getElementById('chatbotBody');
     const icon = document.querySelector('.toggle-icon');
-
+    
     if (isChatbotOpen) {
         body.style.display = 'none';
-        icon.textContent = '▲';
+        if (icon) icon.textContent = '▲';
     } else {
         body.style.display = 'flex';
-        icon.textContent = '▼';
+        if (icon) icon.textContent = '▼';
     }
     isChatbotOpen = !isChatbotOpen;
-}
-
-function handleKeyPress(event) {
-    if (event.key === 'Enter') sendMessage();
 }
 
 function addMessage(text, sender) {
@@ -149,50 +183,61 @@ function addMessage(text, sender) {
 }
 
 function showTypingIndicator() {
-    const div = document.createElement('div');
-    div.className = 'message bot-message';
-    div.id = 'typingIndicator';
-    div.innerHTML = `<div class="message-content">Typing...</div>`;
-    document.getElementById('chatMessages').appendChild(div);
+    const messagesDiv = document.getElementById('chatMessages');
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'message bot-message typing-indicator';
+    typingDiv.id = 'typingIndicator';
+    typingDiv.innerHTML = '<div class="message-content">...</div>';
+    messagesDiv.appendChild(typingDiv);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
 
 function removeTypingIndicator() {
-    const el = document.getElementById('typingIndicator');
-    if (el) el.remove();
+    const typingIndicator = document.getElementById('typingIndicator');
+    if (typingIndicator) {
+        typingIndicator.remove();
+    }
 }
 
 function sendMessage() {
     const input = document.getElementById('chatInput');
     const message = input.value.trim();
+    
     if (!message) return;
-
+    
     addMessage(message, 'user');
     input.value = '';
+    input.disabled = true;
+    
     showTypingIndicator();
-
+    
     fetch('/api/chat', {
         method: 'POST',
-        credentials: "include",   // ⭐ FIXES 401 ERROR
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+            'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ message: message })
     })
-    .then(res => res.json())
+    .then(response => response.json())
     .then(data => {
         removeTypingIndicator();
-
         if (data.success) {
             addMessage(data.response, 'bot');
-
             if (data.crisis_detected) {
                 document.getElementById('crisisWarning').style.display = 'block';
             }
         } else {
-            addMessage("AI error occurred.", "bot");
+            addMessage("I'm here to help. Can you tell me more about how you're feeling?", 'bot');
         }
     })
-    .catch(() => {
+    .catch(error => {
+        console.error('Error:', error);
         removeTypingIndicator();
-        addMessage("Server error. Try again.", "bot");
+        addMessage("I'm here to listen. How are you feeling today?", 'bot');
+    })
+    .finally(() => {
+        input.disabled = false;
+        input.focus();
     });
 }
 </script>
